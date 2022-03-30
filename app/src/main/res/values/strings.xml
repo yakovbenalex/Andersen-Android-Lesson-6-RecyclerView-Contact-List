@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Andersen Android Lesson 5 Contact List</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact_list">Contact List</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="contact_details_label">Contact Details</string>
+    <string name="save">Save</string>
+    <string name="phone">Phone</string>
+    <string name="person_image">Person image</string>
+</resources>
