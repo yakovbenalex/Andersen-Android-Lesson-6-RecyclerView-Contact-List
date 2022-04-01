@@ -1,18 +1,12 @@
 package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 
 private const val ARG_FIRST_NAME = "firstName"
 private const val ARG_LAST_NAME = "lastName"
@@ -51,7 +45,8 @@ class FragmentContactDetails : Fragment() {
         etPhone = root.findViewById<EditText>(R.id.etPhone).also { it.setText(phone) }
 
         root.findViewById<Button>(R.id.btnSaveContactDetails).setOnClickListener {
-            requireActivity().supportFragmentManager.setFragmentResult(
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.setFragmentResult(
                 FragmentContactList.REQUEST_KEY,
                 Bundle().apply {
                     putString(DATA_FIRST_NAME, etFirstName.text.toString())
@@ -59,7 +54,7 @@ class FragmentContactDetails : Fragment() {
                     putString(DATA_PHONE, etPhone.text.toString())
                     putInt(DATA_ID_RECORD, idRecord!!)
                 })
-            requireActivity().supportFragmentManager.popBackStack()
+            fragmentManager.popBackStack()
         }
 
         // Inflate the layout for this fragment

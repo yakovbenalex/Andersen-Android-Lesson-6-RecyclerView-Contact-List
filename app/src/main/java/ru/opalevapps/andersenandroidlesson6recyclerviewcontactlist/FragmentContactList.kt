@@ -1,22 +1,19 @@
 package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist
 
-import android.app.Activity
-import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 private const val TAG = "FragmentContactList"
 
-class FragmentContactList : Fragment() {
-    lateinit var lvContactList: ListView
+class FragmentContactList : Fragment(), OnItemClickListener {
+    lateinit var rvContactList: RecyclerView
     var contactArrayList: ArrayList<Contact> = ArrayList()
-    var contactListAdapter: ContactListAdapter? = null
+    var contactListAdapter: ContactRecyclerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,57 +29,10 @@ class FragmentContactList : Fragment() {
     ): View? {
         val root: View = inflater.inflate(R.layout.fragment_contact, container, false)
 
-        lvContactList = root.findViewById(R.id.lvContactList)
-        contactListAdapter = ContactListAdapter(root.context, contactArrayList)
-        lvContactList.adapter = contactListAdapter
-
-        // listView on item click listener
-        lvContactList.setOnItemClickListener { adapterView, view, position, id ->
-            val element = adapterView.getItemAtPosition(position) as Contact
-            val isTablet = resources.getBoolean(R.bool.isTablet)
-            val fragmentManager = requireActivity().supportFragmentManager
-
-            fragmentManager.apply {
-                beginTransaction().run {
-                    if (isTablet) {
-                        // get contact details fragment
-                        val fragment = fragmentManager.findFragmentByTag(
-                            FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
-                        )
-
-                        // if fragment contact details already opened, then close fragment and replace by new
-                        if (fragment != null) fragmentManager.popBackStack()
-
-                        replace(
-                            R.id.fragment_details_container,
-                            FragmentContactDetails.newInstance(
-                                element.firstName,
-                                element.lastName,
-                                element.phone,
-                                id.toInt()
-                            ),
-                            FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
-                        )
-                    } else {
-                        // if fragment already opened
-                        if (findFragmentByTag(FragmentContactDetails.FRAGMENT_CONTACT_DETAILS) == null) {
-                            replace(
-                                R.id.fragment_container,
-                                FragmentContactDetails.newInstance(
-                                    element.firstName,
-                                    element.lastName,
-                                    element.phone,
-                                    id.toInt()
-                                ),
-                                FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
-                            )
-                        }
-                    }
-                    addToBackStack(FragmentContactDetails.FRAGMENT_CONTACT_DETAILS)
-                    commit()
-                }
-            }
-        }
+        rvContactList = root.findViewById(R.id.rvContactList)
+        rvContactList.layoutManager = LinearLayoutManager(context)
+        contactListAdapter = ContactRecyclerAdapter(root.context, contactArrayList, this)
+        rvContactList.adapter = contactListAdapter
 
         requireActivity().supportFragmentManager.setFragmentResultListener(
             REQUEST_KEY,
@@ -97,9 +47,10 @@ class FragmentContactList : Fragment() {
             contactArrayList[idRecord].lastName = lastName!!
             contactArrayList[idRecord].phone = phone!!
 
-            lvContactList.deferNotifyDataSetChanged()
-            contactListAdapter = ContactListAdapter(root.context, contactArrayList)
-            lvContactList.adapter = contactListAdapter
+            // update data in recycleView
+            rvContactList.invalidate()
+            contactListAdapter = ContactRecyclerAdapter(root.context, contactArrayList, this)
+            rvContactList.adapter = contactListAdapter
         }
 
         // Inflate the layout for this fragment
@@ -112,5 +63,52 @@ class FragmentContactList : Fragment() {
 
         @JvmStatic
         fun newInstance() = FragmentContactList()
+    }
+
+    override fun onItemClicked(contact: Contact, id: Long) {
+        // recycleView on item click listener
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        val fragmentManager = requireActivity().supportFragmentManager
+
+        fragmentManager.apply {
+            beginTransaction().run {
+                if (isTablet) {
+                    // get contact details fragment
+                    val fragment = fragmentManager.findFragmentByTag(
+                        FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
+                    )
+
+                    // if fragment contact details already opened, then close fragment and replace by new
+                    if (fragment != null) fragmentManager.popBackStack()
+
+                    replace(
+                        R.id.fragment_details_container,
+                        FragmentContactDetails.newInstance(
+                            contact.firstName,
+                            contact.lastName,
+                            contact.phone,
+                            id.toInt()
+                        ),
+                        FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
+                    )
+                } else {
+                    // if fragment already opened
+                    if (findFragmentByTag(FragmentContactDetails.FRAGMENT_CONTACT_DETAILS) == null) {
+                        replace(
+                            R.id.fragment_container,
+                            FragmentContactDetails.newInstance(
+                                contact.firstName,
+                                contact.lastName,
+                                contact.phone,
+                                id.toInt()
+                            ),
+                            FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
+                        )
+                    }
+                }
+                addToBackStack(FragmentContactDetails.FRAGMENT_CONTACT_DETAILS)
+                commit()
+            }
+        }
     }
 }
