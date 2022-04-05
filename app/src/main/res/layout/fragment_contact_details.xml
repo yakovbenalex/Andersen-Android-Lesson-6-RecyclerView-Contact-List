@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".FragmentContactDetails">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivContactDetailsPhoto"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvContactDetailsLabel"
+        android:contentDescription="@string/person_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_person" />
 
     <TextView
         android:id="@+id/tvContactDetailsLabel"
@@ -35,10 +43,11 @@
         android:layout_marginTop="@dimen/margin_default"
         android:layout_marginEnd="@dimen/margin_default"
         android:hint="@string/first_name"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvFirstName"
-        app:layout_constraintTop_toBottomOf="@+id/tvContactDetailsLabel"
-        android:inputType="textPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/ivContactDetailsPhoto" />
 
     <TextView
         android:id="@+id/tvLastName"
@@ -56,10 +65,11 @@
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginEnd="@dimen/margin_default"
         android:hint="@string/last_name"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLastName"
-        app:layout_constraintTop_toBottomOf="@+id/etFirstName"
-        android:inputType="textPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/etFirstName" />
 
     <TextView
         android:id="@+id/tvPhone"
@@ -77,10 +87,11 @@
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginEnd="@dimen/margin_default"
         android:hint="@string/phone"
+        android:inputType="phone"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLastName"
-        app:layout_constraintTop_toBottomOf="@+id/etLastName"
-        android:inputType="phone" />
+        app:layout_constraintTop_toBottomOf="@+id/etLastName" />
 
     <Button
         android:id="@+id/btnSaveContactDetails"

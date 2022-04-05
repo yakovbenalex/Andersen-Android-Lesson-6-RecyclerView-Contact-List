@@ -2,6 +2,7 @@ package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.fragments.FragmentContactList
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

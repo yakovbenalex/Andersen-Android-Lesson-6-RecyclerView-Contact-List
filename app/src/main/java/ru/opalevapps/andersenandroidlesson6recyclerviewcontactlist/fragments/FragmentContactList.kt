@@ -1,4 +1,4 @@
-package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist
+package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.ContactRecyclerAdapter
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.OnItemClickListener
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.R
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.model.Contact
 
 private const val TAG = "FragmentContactList"
 
@@ -18,8 +22,8 @@ class FragmentContactList : Fragment(), OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        repeat(5) {
-            contactArrayList.add(Contact())
+        repeat(200) {
+            contactArrayList.add(Contact(photoURL = "https://picsum.photos/id/${it+10}/"))
         }
     }
 
@@ -87,6 +91,7 @@ class FragmentContactList : Fragment(), OnItemClickListener {
                             contact.firstName,
                             contact.lastName,
                             contact.phone,
+                            contact.photoURL,
                             id.toInt()
                         ),
                         FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
@@ -100,6 +105,7 @@ class FragmentContactList : Fragment(), OnItemClickListener {
                                 contact.firstName,
                                 contact.lastName,
                                 contact.phone,
+                                contact.photoURL,
                                 id.toInt()
                             ),
                             FragmentContactDetails.FRAGMENT_CONTACT_DETAILS

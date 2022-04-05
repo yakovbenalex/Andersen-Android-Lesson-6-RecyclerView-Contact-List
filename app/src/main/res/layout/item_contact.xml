@@ -8,6 +8,7 @@
         android:id="@+id/ivContactPhoto"
         android:layout_width="80dp"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_default"
         android:contentDescription="@string/person_image"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_person" />
