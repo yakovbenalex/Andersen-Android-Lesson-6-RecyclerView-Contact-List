@@ -11,8 +11,8 @@
 
         <ImageView
             android:id="@+id/ivContactDetailsPhoto"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_margin="@dimen/margin_default"
             android:contentDescription="@string/person_image"
             app:layout_constraintEnd_toEndOf="parent"

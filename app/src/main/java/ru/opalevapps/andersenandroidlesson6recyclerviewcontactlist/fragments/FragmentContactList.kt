@@ -1,29 +1,39 @@
 package ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.ContactRecyclerAdapter
-import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.OnItemClickListener
 import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.R
 import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.model.Contact
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.ContactRecyclerAdapter
+import ru.opalevapps.andersenandroidlesson6recyclerviewcontactlist.widget.OnItemClickListener
 
 private const val TAG = "FragmentContactList"
+private const val contactListSize = 200
 
 class FragmentContactList : Fragment(), OnItemClickListener {
-    lateinit var rvContactList: RecyclerView
-    var contactArrayList: ArrayList<Contact> = ArrayList()
+    private lateinit var rvContactList: RecyclerView
+    private var contactArrayList: ArrayList<Contact> = ArrayList()
     var contactListAdapter: ContactRecyclerAdapter? = null
+    var searchQuery: String = ""
+    var searchView: SearchView? = null
+    var searchActionMenuItem: MenuItem? = null
+    private var isTablet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isTablet = resources.getBoolean(R.bool.isTablet)
 
-        repeat(200) {
-            contactArrayList.add(Contact(photoURL = "https://picsum.photos/id/${it+10}/"))
+        // for adding search option in app bar
+        setHasOptionsMenu(true)
+
+        // fill example data for recyclerView
+        repeat(contactListSize) {
+            contactArrayList.add(Contact(photoURL = "https://picsum.photos/id/${it + 10}/"))
         }
     }
 
@@ -47,18 +57,48 @@ class FragmentContactList : Fragment(), OnItemClickListener {
             val phone = bundle.getString(FragmentContactDetails.DATA_PHONE)
             val idRecord = bundle.getInt(FragmentContactDetails.DATA_ID_RECORD)
 
-            contactArrayList[idRecord].firstName = firstName!!
-            contactArrayList[idRecord].lastName = lastName!!
-            contactArrayList[idRecord].phone = phone!!
+            val contact = contactListAdapter!!.fullContactsArrayList
+            // find changing contact index
+            val index: Int = contact.indexOfFirst { it.id == idRecord }
+            // change contact data
+            contact[index].firstName = firstName!!
+            contact[index].lastName = lastName!!
+            contact[index].phone = phone!!
 
             // update data in recycleView
-            rvContactList.invalidate()
-            contactListAdapter = ContactRecyclerAdapter(root.context, contactArrayList, this)
-            rvContactList.adapter = contactListAdapter
+            if (isTablet) contactListAdapter?.filter?.filter(searchQuery)
+            else contactListAdapter?.filter?.filter("")
         }
 
         // Inflate the layout for this fragment
         return root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+
+        // add search item to app bar
+        searchActionMenuItem = menu.findItem(R.id.action_search)
+        searchView = searchActionMenuItem?.actionView as SearchView
+        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                if (!searchView!!.isIconified) {
+                    searchView!!.isIconified = true
+                }
+                searchActionMenuItem?.collapseActionView()
+                return false
+            }
+
+            override fun onQueryTextChange(s: String): Boolean {
+                if (s.isNotEmpty()) searchQuery = s
+
+                contactListAdapter?.filter?.filter(s)
+                Log.d(TAG, "onQueryTextChange: $s")
+                return false
+            }
+        })
+
+        return super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {
@@ -71,7 +111,6 @@ class FragmentContactList : Fragment(), OnItemClickListener {
 
     override fun onItemClicked(contact: Contact, id: Long) {
         // recycleView on item click listener
-        val isTablet = resources.getBoolean(R.bool.isTablet)
         val fragmentManager = requireActivity().supportFragmentManager
 
         fragmentManager.apply {
@@ -92,7 +131,7 @@ class FragmentContactList : Fragment(), OnItemClickListener {
                             contact.lastName,
                             contact.phone,
                             contact.photoURL,
-                            id.toInt()
+                            contact.id
                         ),
                         FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
                     )
@@ -106,7 +145,7 @@ class FragmentContactList : Fragment(), OnItemClickListener {
                                 contact.lastName,
                                 contact.phone,
                                 contact.photoURL,
-                                id.toInt()
+                                contact.id
                             ),
                             FragmentContactDetails.FRAGMENT_CONTACT_DETAILS
                         )

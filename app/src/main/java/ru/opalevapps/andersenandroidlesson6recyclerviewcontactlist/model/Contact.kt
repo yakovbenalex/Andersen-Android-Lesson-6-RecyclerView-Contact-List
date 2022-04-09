@@ -6,4 +6,5 @@ data class Contact(
     var phone: String = "+79007777777",
     val photoURL: String = "https://picsum.photos/100",
 ) {
+    val id: Int get() = hashCode()
 }

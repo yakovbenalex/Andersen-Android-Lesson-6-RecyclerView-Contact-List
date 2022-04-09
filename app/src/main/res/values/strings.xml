@@ -8,4 +8,6 @@
     <string name="save">Save</string>
     <string name="phone">Phone</string>
     <string name="person_image">Person image</string>
+    <string name="filter">Filter:</string>
+    <string name="search">Search</string>
 </resources>

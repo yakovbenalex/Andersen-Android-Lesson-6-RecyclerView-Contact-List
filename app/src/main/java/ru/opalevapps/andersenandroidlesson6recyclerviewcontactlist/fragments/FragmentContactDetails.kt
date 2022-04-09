@@ -29,6 +29,7 @@ class FragmentContactDetails : Fragment() {
     private lateinit var etLastName: EditText
     private lateinit var etPhone: EditText
     private lateinit var ivContactDetailsPhoto: ImageView
+    private var isTablet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,9 @@ class FragmentContactDetails : Fragment() {
             photoUrl = it.getString(ARG_PHOTO_URL)
             idRecord = it.getInt(ARG_ID_RECORD)
         }
+
+        // get device info - is tablet or not
+        isTablet = resources.getBoolean(R.bool.isTablet)
     }
 
     override fun onCreateView(
@@ -46,12 +50,14 @@ class FragmentContactDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_contact_details, container, false)
+        // set loading image size depending on screen size
+        val imageSize = if (isTablet) 300 else 200
 
         etFirstName = root.findViewById<EditText>(R.id.etFirstName).also { it.setText(firstName) }
         etLastName = root.findViewById<EditText>(R.id.etLastName).also { it.setText(lastName) }
         etPhone = root.findViewById<EditText>(R.id.etPhone).also { it.setText(phone) }
         ivContactDetailsPhoto = root.findViewById<ImageView>(R.id.ivContactDetailsPhoto).also {
-            ImageLoading.loadPicturePicasso(requireContext(), it, photoUrl.toString(), 200)
+            ImageLoading.loadPicturePicasso(requireContext(), it, photoUrl.toString(), imageSize)
         }
 
         root.findViewById<Button>(R.id.btnSaveContactDetails).setOnClickListener {
